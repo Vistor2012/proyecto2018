@@ -14,7 +14,7 @@ let Vecindario = require("../../../database/collections/vecindario");
 var storage = multer.diskStorage({
   destination: "./public/avatars",
   filename: function (req, file, cb) {
-    cb(null, file.originalname + "-" + Date.now() + ".jpg");
+    cb(null, file.originalname/* + "-" + Date.now() + ".jpg"*/);
   }
 });
 //funcion que nos permitira guardar la imagen y ademas guardar sus datos en la colleccion
@@ -53,7 +53,8 @@ router.post("/agenteVentas", (req, res) => {
       var movilF4 = movil.substr(4,4);//7293 3481
       var agente = {
         name : req.body.name,
-        lastname : req.body.lastname,
+        phone : req.body.phone,
+        phone2 : req.body.phone2,
         movil : movil,
         movilFiltered : movilF,
         email : req.body.email,
@@ -63,7 +64,10 @@ router.post("/agenteVentas", (req, res) => {
       }
       var agenteData = new Agente(agente);
       agenteData.save().then((doc)=>{
-        res.status(200).json(doc);//devolvemos el dcoumento creado
+        res.status(200).json({
+          msn : "Registro existoso",
+          id : doc._id
+          });//devolvemos el dcoumento creado
       }).catch((error)=>{
         res.status(400).json({error : error});//aqui el error
       });
@@ -92,6 +96,12 @@ router.post("/inmuebles", (req, res) => {
       error : err
     });
   });
+});
+router.get("/img", (req, res, next) => {
+  Img.find({}).exec( (error, docs) => {
+    //console.log(docs)
+    res.status(200).json(docs);
+  })
 });
 router.get("/agenteVentas", (req, res, next) => {
   Agente.find({}).exec( (error, docs) => {
@@ -127,6 +137,32 @@ router.get("/inmuebles", (req, res, next) => {
   })
 
 });
+//ruta para actualizar un anuncio segun los campos que se reciban
+router.patch(/inmuebles\/[a-z0-9]{1,}$/, (req, res) => {
+  var url = req.url;
+  var id = url.split("/")[2];
+  var keys = Object.keys(req.body);
+  var inmuebles = {};
+  //aqui cargamos todos los campos recibidos en este caso latitud y longitud
+  for (var i = 0; i < keys.length; i++) {
+    inmuebles[keys[i]] = req.body[keys[i]];
+  }
+  //Hacemos la actualizacion
+  Inmueble.updateOne({_id: id}, inmuebles, (err, doc) => {
+      if(err || doc.n==0) {
+        res.status(500).json({
+          "msn": "Error no se pudo actualizar los datos"
+        });
+        return;
+      }
+      //devolvemos el documento actualizado
+      res.status(200).json(doc);
+      return;
+
+  });
+});
+
+
 //crear recipe
 router.post("/recipes", (req, res) => {
   //Ejemplo de validacion
@@ -208,142 +244,6 @@ router.get(/ingredients\/[a-z0-9]{1,}$/, (req, res) => {
       "msn" : "No existe el ingrediente"
     });
   })
-});
-//leer solo una receta
-router.get(/recipes\/[a-z0-9]{1,}$/, (req, res) => {
-  var url = req.url;
-  var id = url.split("/")[2];
-  console.log(url.split("/"))
-  Recipe.findOne({_id : id}).exec( (error, docs) => {
-    if (docs != null) {
-        res.status(200).json(docs);
-        return;
-    }
-
-    res.status(200).json({
-      "msn" : "No existe la Receta"
-    });
-  })
-});
-//eliminar  receta
-router.delete(/recipes\/[a-z0-9]{1,}$/, (req, res) => {
-  var url = req.url;
-  var id = url.split("/")[2];
-  Recipe.find({_id : id}).remove().exec( (err, docs) => {
-      res.status(200).json(docs);
-  });
-});
-//eliminar  ingrediente
-router.delete(/ingredients\/[a-z0-9]{1,}$/, (req, res) => {
-  var url = req.url;
-  var id = url.split("/")[2];
-  Ingredient.find({_id : id}).remove().exec( (err, docs) => {
-      res.status(200).json(docs);
-  });
-});
-
-//actualizar campos que se envian de la receta (keys)
-router.patch(/recipes\/[a-z0-9]{1,}$/, (req, res) => {
-  var url = req.url;
-  var id = url.split("/")[2];
-  var keys = Object.keys(req.body);
-  var recipe = {};
-  for (var i = 0; i < keys.length; i++) {
-    recipe[keys[i]] = req.body[keys[i]];
-  }
-  //console.log(recipe);
-  Recipe.findOneAndUpdate({_id: id}, recipe, (err, params) => {
-      if(err) {
-        res.status(500).json({
-          "msn": "Error no se pudo actualizar los datos"
-        });
-        return;
-      }
-      res.status(200).json(params);
-      return;
-  });
-});
-//actualizar campos que se envian del ingrediente (keys)
-router.patch(/ingredients\/[a-z0-9]{1,}$/, (req, res) => {
-  var url = req.url;
-  var id = url.split("/")[2];
-  var keys = Object.keys(req.body);
-  var ingredient = {};
-  for (var i = 0; i < keys.length; i++) {
-    ingredient[keys[i]] = req.body[keys[i]];
-  }
-  //console.log(ingredient);
-  Ingredient.findOneAndUpdate({_id: id}, ingredient, (err, params) => {
-      if(err) {
-        res.status(500).json({
-          "msn": "Error no se pudo actualizar los datos"
-        });
-        return;
-      }
-      res.status(200).json(params);
-      return;
-  });
-});
-//actualizar todos los campos de una receta
-router.put(/recipes\/[a-z0-9]{1,}$/, (req, res) => {
-  var url = req.url;
-  var id = url.split("/")[2];
-  var keys  = Object.keys(req.body);
-  var oficialkeys = ['name', 'descripcion', 'ingredients'];
-  var result = _.difference(oficialkeys, keys);
-  if (result.length > 0) {
-    res.status(400).json({
-      "msn" : "Existe un error en el formato de envio puede hacer uso del metodo patch si desea editar solo un fragmentode la informacion"
-    });
-    return;
-  }
-
-  var recipe = {
-    name : req.body.name,
-    descripcion : req.body.descripcion,
-    ingredients : req.body.ingredients
-  };
-  Recipe.findOneAndUpdate({_id: id}, recipe, (err, params) => {
-      if(err) {
-        res.status(500).json({
-          "msn": "Error no se pudo actualizar los datos"
-        });
-        return;
-      }
-      res.status(200).json(params);
-      return;
-  });
-});
-
-//actualizar todos los campos de un ingrediente
-router.put(/ingredients\/[a-z0-9]{1,}$/, (req, res) => {
-  var url = req.url;
-  var id = url.split("/")[2];
-  var keys  = Object.keys(req.body);
-  var oficialkeys = ['name', 'kcal', 'peso'];
-  var result = _.difference(oficialkeys, keys);
-  if (result.length > 0) {
-    res.status(400).json({
-      "msn" : "Existe un error en el formato de envio puede hacer uso del metodo patch si desea editar solo un fragmentode la informacion"
-    });
-    return;
-  }
-
-  var ingredient = {
-    name : req.body.name,
-    kcal : req.body.kcal,
-    peso : req.body.peso
-  };
-  Ingredient.findOneAndUpdate({_id: id}, ingredient, (err, params) => {
-      if(err) {
-        res.status(500).json({
-          "msn": "Error no se pudo actualizar los datos"
-        });
-        return;
-      }
-      res.status(200).json(params);
-      return;
-  });
 });
 
 

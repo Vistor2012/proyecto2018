@@ -1,7 +1,7 @@
 const mongoose = require("../connect");
 const Schema = require("mongoose").Schema;
 var inmuebleSchema = {
-  	//ID: 162789,
+	//ID: 162789,
 	//pk: 162789,
 	//codigo: "UC-162789",
 	agente: {type : Schema.ObjectId,ref : "agente"},//38747,
@@ -48,7 +48,7 @@ var inmuebleSchema = {
 	latitud: String,//"-17.773087",
 	longitud: String,//"-63.226963",
 	bshow: Boolean,// false,
-	bmipublic: Boolean,// false, 
+	bmipublic: Boolean,// false,
 	rating: Number,//0,
 	href: String,//"https://www.ultracasas.com/bo/map/inmueble/162789/2017-08-28/terreno/venta/santa-cruz/urubó/",
 	hrefPago: String,//"https://www.ultracasas.com/destacarinmueble/162789",
@@ -58,7 +58,7 @@ var inmuebleSchema = {
 	ogDescription: String,//"Terreno en Venta en Urubó Santa Cruz de la Sierra, POR MOTIVO DE VIAJE A solo 3.5 kms del puete foianini (5 minutos), con la vista mas privilegiada y zona mas alta del URUBO, terreno en Condominio Rio Sierra, 100% consolidado desde el 2010. Construya el hogar de sus sueños en 1015 m2, ideal para cualquier tipo de proyecto. Precio 170$/m2 El terreno se encuentra en el centro al frente de áreas verdes. Contacto directo con propietario solo whatsapp al: 79333900",
 	ogPicture: String,//"https://cdn1.ultracasas.com/dyn/yastaimages/71d082c691c10498df08be300e8cf38aef57f3.jpg",
 	hrefPageShort: String,//"https://www.ultracasas.com/bo/page/inmueble/162789",
-	//idPlanAgente: null, ? 
+	//idPlanAgente: null, ?
 	/*IIP: 1,
 	PLNC: "default",
 	PLN: "Gratuito",
@@ -70,7 +70,7 @@ var inmuebleSchema = {
 	bIsCompanyCompanyInfo: false,
 	bIsCompanyContactInfo: false,*/
 	images: [{type : Schema.ObjectId,ref : "inmuebleimg"}],
-	
+
 	video: [{type : Object}],
 	/*
 	[
@@ -82,23 +82,7 @@ var inmuebleSchema = {
 		}
 	],*/
 	favoritos: Number,//0,
-	//bHasNetwork: false, ? 
+	//bHasNetwork: false, ?
 };
 var inmueble = mongoose.model("inmueble", inmuebleSchema);
 module.exports = inmueble;
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-	
