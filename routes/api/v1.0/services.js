@@ -6,9 +6,9 @@ var router = express.Router();
 var Agente = require("../../../database/collections/agenteVentas");
 var Img = require("../../../database/collections/img");
 
-let Inmueble = require("../../../database/collections/inmueble");
-let Inmuebleimg = require("../../../database/collections/inmuebleimg");
-let Vecindario = require("../../../database/collections/vecindario");
+var Inmueble = require("../../../database/collections/inmueble");
+var Inmuebleimg = require("../../../database/collections/inmuebleimg");
+var Vecindario = require("../../../database/collections/vecindario");
 
 //Definimos donde se guardara la imagen avatar
 var storage = multer.diskStorage({
@@ -161,90 +161,5 @@ router.patch(/inmuebles\/[a-z0-9]{1,}$/, (req, res) => {
 
   });
 });
-
-
-//crear recipe
-router.post("/recipes", (req, res) => {
-  //Ejemplo de validacion
-  if (req.body.name == "" && req.body.descripcion == "") {
-    res.status(400).json({
-      "msn" : "formato incorrecto"
-    });
-    return;
-  }
-  //console.log(req.body.ingredients);return;
-  var recipe = {
-    name : req.body.name,
-    descripcion : req.body.descripcion,
-    ingredients : req.body.ingredients//array
-  };
-  //5af9bf6f b25a66 19c8 03e7db
-  var recipeData = new Recipe(recipe);
-
-  recipeData.save().then( () => {
-    //content-type
-    res.status(200).json({
-      "msn" : "recipe Registrado con exito "
-    });
-  });
-});
-
-//crear ingredients
-router.post("/ingredients", (req, res) => {
-  //Ejemplo de validacion
-  if (req.body.name == "" && req.body.kcal == "" && req.body.peso == "") {
-    res.status(400).json({
-      "msn" : "formato incorrecto"
-    });
-    return;
-  }
-  //console.log(req.body.ingredients);return;
-  var ingredient = {
-    name : req.body.name,
-    kcal : req.body.kcal,
-    peso : req.body.peso
-  };
-
-  var ingredientData = new Ingredient(ingredient);
-
-  ingredientData.save().then( () => {
-    //content-type
-    res.status(200).json({
-      "msn" : "Ingrediente Registrado con exito "
-    });
-  });
-});
-//leer todos recipes
-router.get("/recipes", (req, res, next) => {
-  Recipe.find({}).exec( (error, docs) => {
-    console.log(docs)
-    res.status(200).json(docs);
-  })
-});
-//leer ingredients
-router.get("/ingredients", (req, res, next) => {
-  Ingredient.find({}).exec( (error, docs) => {
-    //console.log(docs[0]._id)
-    res.status(200).json(docs);
-  })
-});
-
-
-// Leer solo un ingredient
-router.get(/ingredients\/[a-z0-9]{1,}$/, (req, res) => {
-  var url = req.url;
-  var id = url.split("/")[2];
-  Ingredient.findOne({_id : id}).exec( (error, docs) => {
-    if (docs != null) {
-        res.status(200).json(docs);
-        return;
-    }
-
-    res.status(200).json({
-      "msn" : "No existe el ingrediente"
-    });
-  })
-});
-
 
 module.exports = router;
