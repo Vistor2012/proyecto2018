@@ -76,47 +76,9 @@ router.post("/agenteVentas", (req, res) => {
   });
 });
 //ruta para insertar un nuevo inmueble
-
-/*router.post("/inmuebles",(req, res) =>{
-  var inmueble = {
-    precio : req.body.precio,
-    descripcion : req.body.descripcion,
-    servicios : req.body.servicios,
-    superficie : req.body.superficie
-  };
-  var inmuebleData = new Inmueble(inmueble);
-  inmuebleData.save().then(() => {
-    res.status(200).json({
-      "msn" : "Registrado con exito"
-    });
-  });
-});*/
-
-/*router.post("/inmuebles", (req, res) => {
-
-  var inmueble = {
-    precio : req.body.precio,
-    descripcion : req.body.descripcion,
-    servicios : req.body.servicios,
-    superficie : req.body.superficie
-  };
-  var inmuebleData = new Inmueble(inmueble);
-  inmuebleData.save().then( () => {
-    res.status(200).json({
-      "msn" : "inmueble Registrado con exito "
-    });
-  }).catch(err => {
-    //console.log(err);
-    res.status(500).json({
-      error : err
-    });
-  });
-});*/
-
-
 router.post("/inmuebles", (req, res) => {
   //Ejemplo de validacion
-  if (req.body.precio == "" && req.body.superficie == "") {
+  if (req.body.precio == "" && req.body.tipo_operacion == "") {
     res.status(400).json({
       "msn" : "formato incorrecto"
     });
@@ -126,7 +88,8 @@ router.post("/inmuebles", (req, res) => {
     precio : req.body.precio,
     descripcion : req.body.descripcion,
     servicios : req.body.servicios,
-    superficie : req.body.superficie
+    superficie : req.body.superficie,
+    tipo_operacion : req.body.tipo_operacion
   };
   var inmuebleData = new Inmueble(inmueble);
 
