@@ -78,7 +78,7 @@ router.post("/agenteVentas", (req, res) => {
 //ruta para insertar un nuevo inmueble
 router.post("/inmuebles", (req, res) => {
   //Ejemplo de validacion
-  if (req.body.precio == "" && req.body.tipo_operacion == "") {
+  if (req.body.precio == "" && req.body.lon == "") {
     res.status(400).json({
       "msn" : "formato incorrecto"
     });
@@ -89,7 +89,10 @@ router.post("/inmuebles", (req, res) => {
     descripcion : req.body.descripcion,
     servicios : req.body.servicios,
     superficie : req.body.superficie,
-    tipo_operacion : req.body.tipo_operacion
+    tipo_operacion : req.body.tipo_operacion,
+    direccion : req.body.direccion,
+    lat : req.body.lat,
+    lon : req.body.lon
   };
   var inmuebleData = new Inmueble(inmueble);
 
