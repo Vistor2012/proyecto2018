@@ -7,8 +7,8 @@ var inmuebleSchema = {
 	superficie: String,//metros cuadrados
 	tipo_operacion : String,//venta - alquiler o anticretico,
 	direccion : String, //en que parte de la ciudad se encuentra
-	lat : Number, //latitud
-	lon : Number //longitud
+	lat : String, //latitud
+	lon : String //longitud
 
 };
 var inmueble = mongoose.model("inmueble", inmuebleSchema);
