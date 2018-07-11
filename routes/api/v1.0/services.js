@@ -87,18 +87,18 @@ router.post("/inmuebles", (req, res) => {
       var rutaFoto = '';
       if (req.file != undefined) {
         var ruta = req.file.path.substr(6, req.file.path.length);
-        rutaFoto = "http://localhost:7777" + ruta;
+        rutaFoto = ruta;
         var img = {
           name : req.file.originalname,
           physicalpath: req.file.path,
           relativepath: rutaFoto
         };
 
-        var inmuebleimgData = new Inmuebleimg(inmuebleimg);
+        /*var inmuebleimgData = new Inmuebleimg(inmuebleimg);
         inmuebleimgData.save().catch( (error) => {
           //content-type
           res.status(400).json({error : error});
-        });
+        });*/
       }
       var inmueble = {
         precio : req.body.precio,
@@ -108,7 +108,8 @@ router.post("/inmuebles", (req, res) => {
         tipo_operacion : req.body.tipo_operacion,
         direccion : req.body.direccion,
         lat : req.body.lat,
-        lon : req.body.lon
+        lon : req.body.lon,
+        images : rutaFoto
       };
       var inmuebleData = new Inmueble(inmueble);
       inmuebleData.save().then((doc)=>{
